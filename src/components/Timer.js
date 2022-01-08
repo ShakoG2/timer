@@ -9,12 +9,23 @@ const Timer = () => {
     const [stopTimer, setStopTimer] = useState(true);
     const [buttonText, setButtonText] = useState("Start");
     const [step, setStep] = useState();
+    const [history, setHistory] = useState([]);
 
     const start = () => {
         if (!step) return;
-        setSecond((second) => second + 1)
+        if (stopTimer)
+            setSecond((second) => second + 1)
         setStopTimer(!stopTimer);
+        if (!stopTimer) {
+            if (history.length === 2)
+                history.pop();
+            setHistory((history) => [time + ' ' + (step === 100 ? 'milliSeconds' : 'Seconds'), ...history]);
+        }
         setButtonText(stopTimer ? "Stop" : "Start")
+    }
+
+    const convertMinutesToTime = (x) => {
+        return new Date(x * 1000).toISOString().substr(11, 8)
     }
 
     const setMin = () => {
@@ -32,8 +43,12 @@ const Timer = () => {
         setButtonText("Start");
     }
 
+    const resetHistory = () => {
+        setHistory([]);
+    }
+
     useEffect(() => {
-        setTime(new Date(second * 1000).toISOString().substr(11, 8));
+        setTime(convertMinutesToTime(second));
         if (!stopTimer && step !== null) {
             setTimeout(() => {
                 setSecond((sec) => sec !== 0 ? sec + 1 : 0);
@@ -64,6 +79,22 @@ const Timer = () => {
                         <Button variant="dark" onClick={start}>{buttonText}</Button>
                     </ButtonGroup>
                 </Card.Footer>
+            </Card>
+            <Card className={card}>
+                <Card.Header>
+                    <ButtonGroup aria-label="Basic example" className="d-flex justify-content-between">
+                        <Button variant="dark" onClick={resetHistory}>Reset</Button>
+                    </ButtonGroup>
+                </Card.Header>
+                <Card.Title className="d-flex justify-content-center text-white">
+                    History
+                </Card.Title>
+                <Card.Body>
+                    <ul className="list-group bg-dark">
+                        {history.map((history, index) => <li key={index}
+                                                             className="list-group-item bg-dark text-white ">{history}</li>)}
+                    </ul>
+                </Card.Body>
             </Card>
         </Container>
     )
