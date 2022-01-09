@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {Button, ButtonGroup, Card, Container} from "react-bootstrap";
 import card from './Timer.css'
+import {clear} from "@testing-library/user-event/dist/clear";
 
 
 const Timer = () => {
@@ -46,6 +47,7 @@ const Timer = () => {
     const resetHistory = () => {
         setHistory([]);
     }
+
     const addMinute = () => {
         if (!stopTimer && step !== null) {
             setTimeout(() => {
@@ -58,9 +60,10 @@ const Timer = () => {
     useEffect(() => {
         setTime(convertMinutesToTime(second));
         addMinute();
-    }, [second], () => {
-        clearInterval(addMinute())
-    });
+        return () => {
+            clearInterval(addMinute());
+        }
+    }, [second]);
 
     return (
         <Container fluid={"xxl"} className="d-flex justify-content-center">
