@@ -46,15 +46,21 @@ const Timer = () => {
     const resetHistory = () => {
         setHistory([]);
     }
-
-    useEffect(() => {
-        setTime(convertMinutesToTime(second));
+    const addMinute = () => {
         if (!stopTimer && step !== null) {
             setTimeout(() => {
                 setSecond((sec) => sec !== 0 ? sec + 1 : 0);
             }, step);
         }
-    }, [second]);
+    }
+
+
+    useEffect(() => {
+        setTime(convertMinutesToTime(second));
+        addMinute();
+    }, [second], () => {
+        clearInterval(addMinute())
+    });
 
     return (
         <Container fluid={"xxl"} className="d-flex justify-content-center">
