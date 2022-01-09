@@ -60,9 +60,9 @@ const Timer = () => {
     useEffect(() => {
         setTime(convertMinutesToTime(second));
         addMinute();
-        return () => {
-            clearInterval(addMinute());
-        }
+        // return () => {
+        //    return  clearInterval(addMinute());
+        // }
     }, [second]);
 
     return (
